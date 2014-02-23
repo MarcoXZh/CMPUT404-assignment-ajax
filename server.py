@@ -60,13 +60,6 @@ class World:
     return self.space
   # def world(self)
 
-  def __str__(self):
-    msg = 'World: {\n'
-    for key in self.space:
-      msg += '  dict["%"] = "%"\n' % (key, self.space[key])
-    msg += '}'
-    return msg
-  # def __unicode__(self)
 # class World
 
 # you can test your webservice from the commandline
@@ -96,12 +89,16 @@ def hello():
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
   '''update the entities via this interface'''
-  return None
+  return 'entity'
 # def update(entity)
 
 @app.route("/world", methods=['POST','GET'])
 def world():
-  return str(myWorld).replace('\n', '<br />')
+  msg = 'World: {<br />\n'
+  for key in myWorld.world():
+    msg += '  dict["%"] = "%"<br />\n' % (key, myWorld.world()[key])
+  msg += '}'
+  return msg
 # def world()
 
 @app.route("/entity/<entity>")
