@@ -21,7 +21,6 @@
 #     pip install flask
 
 
-import flask
 from flask import Flask, request, redirect, url_for
 import json
 app = Flask(__name__)
@@ -63,7 +62,7 @@ class World:
 # class World
 
 # you can test your webservice from the commandline
-# curl -v   -H "Content-Type: appication/json" -X PUT http://127.0.0.1:5000/entity/X -d '{"x":1,"y":1}' 
+# curl -v -H "Content-Type: appication/json" -X PUT http://127.0.0.1:5000/entity/X -d '{"x":1,"y":1}' 
 
 myWorld = World()
 
@@ -88,29 +87,36 @@ def hello():
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
-  '''update the entities via this interface'''
-  return 'entity'
+  myWorld.set(entity, flask_post_json())
+  return str(myWorld.world()) + '\n'
 # def update(entity)
 
 @app.route("/world", methods=['POST','GET'])
 def world():
   msg = 'World: {<br />\n'
   for key in myWorld.world():
-    msg += '  dict["%"] = "%"<br />\n' % (key, myWorld.world()[key])
+    msg += '&nbsp;&nbsp;dict["' + key + '"] = "' + str(myWorld.world()[key]) + '"<br />\n'
   msg += '}'
   return msg
 # def world()
 
 @app.route("/entity/<entity>")
 def get_entity(entity):
-  '''This is the GET version of the entity interface, return a representation of the entity'''
-  return None
+  value = myWorld.world().get(entity)
+  if value:
+    return entity + ' = ' + str(value)
+  else:
+    return 'Entity Not Found'
 # def get_entity(entity)
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
-  '''Clear the world out!'''
-  return None
+  myWorld.clear()
+  msg = 'Succeed! <br />\nWorld: {<br />\n'
+  for key in myWorld.world():
+    msg += '&nbsp;&nbsp;dict["' + key + '"] = "' + str(myWorld.world()[key]) + '"<br />\n'
+  msg += '}'
+  return msg
 # def clear()
 
 if __name__ == "__main__":
