@@ -21,7 +21,7 @@
 #     pip install flask
 
 
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, jsonify
 import json
 app = Flask(__name__)
 app.debug = True
@@ -87,26 +87,20 @@ def hello():
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
-  myWorld.set(entity, flask_post_json())
-  return str(myWorld.world()) + '\n'
+  data = flask_post_json()
+  for key in data:
+    myWorld.update(entity, key, data.get(key));
+  return jsonify(myWorld.world().get(entity)), 200
 # def update(entity)
 
 @app.route("/world", methods=['POST','GET'])
 def world():
-  msg = 'World: {<br />\n'
-  for key in myWorld.world():
-    msg += '&nbsp;&nbsp;dict["' + key + '"] = "' + str(myWorld.world()[key]) + '"<br />\n'
-  msg += '}'
-  return msg
+  return jsonify(myWorld.world()), 200
 # def world()
 
 @app.route("/entity/<entity>")
 def get_entity(entity):
-  value = myWorld.world().get(entity)
-  if value:
-    return entity + ' = ' + str(value)
-  else:
-    return 'Entity Not Found'
+  return jsonify(myWorld.get(entity)), 200
 # def get_entity(entity)
 
 @app.route("/clear", methods=['POST','GET'])
