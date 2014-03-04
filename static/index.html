@@ -30,6 +30,7 @@ var host = window.location.host;
 var context = canvas.getContext('2d');
 var W = canvas.width = window.innerWidth - 6;
 var H = canvas.height = window.innerHeight-50;
+var color = '#'+ (Math.random() * 0xFFFFFF << 0).toString(16);
 
 function sendJSONXMLHTTPRequest(url, objects, callback) {
   var xhr = new XMLHttpRequest();
@@ -54,7 +55,7 @@ world = {};
 function drawCircle(context, entity) {
   with(context) {
     beginPath();
-    lineWidth = 3;
+    lineWidth = 5;
     var x = entity['x'];
     var y = entity['y'];
     fillStyle = entity['colour'];
@@ -220,16 +221,17 @@ mouse = (function() {
 
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
+// Users in different client sessions will paint in different random colors
 mouse.mousedowners.push(function(x, y, clicked, e) {
-  addEntityWithoutName({'x': x,'y': y,'colour': '#FF6600', 'radius': 20});
+  addEntityWithoutName({'x': x,'y': y,'colour': color, 'radius': 10});
 }); // mouse.mousedowners.push(function(x, y, clicked, e)
 
 mouse.mouseuppers.push(function(x, y, clicked, e) {
-  addEntityWithoutName({'x': x,'y': y,'colour': '#FFFF00', 'radius': 20});
+  addEntityWithoutName({'x': x,'y': y,'colour': color, 'radius': 10});
 }); // mouse.mouseuppers.push(function(x, y, clicked, e)
 
 mouse.mousedraggers.push(function(x, y, clicked, e) {
-  addEntityWithoutName({'x': x,'y': y, 'radius': 10});
+  addEntityWithoutName({'x': x,'y': y, 'colour': color, 'radius': 5});
 }); // mouse.mousedraggers.push(function(x, y, clicked, e)
 
 function update() {
